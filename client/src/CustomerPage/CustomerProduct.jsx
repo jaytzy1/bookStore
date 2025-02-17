@@ -63,7 +63,7 @@ const CustomerProduct = () => {
             Flash <span className="text-danger">Sale</span>
           </h1>
           {searchProduct.map((product) => (
-            <div className="col-md-2 col-sm-5 py-2" key={product.id}>
+            <div className="col-md-2 col-sm-6 py-2" key={product.id}>
               <div className="card">
                 <img
                   src={product.image}

@@ -1,5 +1,5 @@
 import { Navigate, Route,Routes } from "react-router-dom"
-import Firstlayout from "./layout/Firstlayout"
+import FirstLayout from "./layout/FirstLayout"
 import Customer from "./pages/Customer"
 import Solution from "./pages/Solution"
 import Support from "./pages/Support"
@@ -38,7 +38,7 @@ function App (){
     <>
    <Routes>
     //firstlayout
-     <Route path="/"  element={<Firstlayout/>}> 
+     <Route path="/"  element={<FirstLayout/>}> 
      <Route path="/" element={<Customer/>}/>
      <Route path="/SellerSignUp" element={<SellerSignUp/>}/>
      <Route path="/SellerSignIn" element={<SellerSignIn/>}/>

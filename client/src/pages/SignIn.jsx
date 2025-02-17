@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -11,44 +12,39 @@ function SignIn() {
 
   const handleSigninSubmit = async (e) => {
     e.preventDefault();
+    if (!username || !password) return toast.error("All fields are required.");
 
     try {
-      // Sending GET request with username and password as query parameters
-      const response = await axios.get('http://localhost:5000/userlogin/SignIn', {
-        params: {
-          username: username,
-          password: password
-        }
+      const { data } = await axios.get('http://localhost:5000/userlogin/SignIn', {
+        params: { username, password }
       });
 
-      if (response.status === 200) {
-        const token = 
-        alert('Sign In successfully');
-        navigate('/CustomerProduct');  // Redirect to the product page after successful login
-      }
+      toast.success('Sign In successful!', { position: "top-center" });
+      setTimeout(() => navigate('/CustomerProduct'), 1500);
     } catch (error) {
-      // Show the error message from the backend
-      setError(error.response?.data?.message || 'Error signing in');
+      const errorMessage = error.response?.data?.message || 'Error signing in';
+      setError(errorMessage);
+      toast.error(errorMessage, { position: "top-center" });
     }
   };
 
   return (
-    <div className="p-5">
-      <div className="container">
+    <>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+      <div className="p-5 container">
         <h1 className="text-center text-primary">Book Store</h1>
         <div className="row justify-content-center">
           <div className="col-12 col-lg-6 col-md-8 col-sm-9">
             <div className="card shadow">
               <div className="card-body">
                 <h2 className="card-title text-center">Sign In</h2>
-
                 {error && <div className="alert alert-danger">{error}</div>}
 
                 <form onSubmit={handleSigninSubmit}>
-                  <div className="mb-2 shadow">
+                  <div className="mb-2">
                     <label className="form-label">Username</label>
                     <input
-                      className="form-control"
+                      className="form-control shadow"
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
@@ -57,10 +53,10 @@ function SignIn() {
                     />
                   </div>
 
-                  <div className="mb-2 shadow">
+                  <div className="mb-2">
                     <label className="form-label">Password</label>
                     <input
-                      className="form-control"
+                      className="form-control shadow"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -69,11 +65,11 @@ function SignIn() {
                     />
                   </div>
 
-                  <div className="mb-2 text-center">
+                  <div className="text-center">
                     <button type="submit" className="btn btn-primary px-5">Log in</button>
                   </div>
 
-                  <div className="mb-2 text-center">
+                  <div className="text-center mt-3">
                     <Link className="text-decoration-none" to='/signUp'>Sign Up for Book Store?</Link>
                   </div>
                 </form>
@@ -82,7 +78,7 @@ function SignIn() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

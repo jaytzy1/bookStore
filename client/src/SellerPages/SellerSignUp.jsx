@@ -1,154 +1,90 @@
-import axios from "axios"
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const SellerLogin = () =>{
-
+const SellerLogin = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    FullName: '',
+    Age: '',
+    Address: '',
+    Contact: '',
+    Password: '',
+    ConfirmPassword: '',
+  });
 
-   const [FullName,setFullName] = useState('')
-   const [Age,setAge] = useState('')
-   const [Address,setAddress] = useState('')
-   const [Contact,setContact] = useState('')
-   const [Password,setPassword] = useState('')
-   const [ConfirmPassword,setconfirmPassword] = useState('')
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-  const handleSellerSignUpSUbmit = async (e) =>{
-    e.preventDefault()
+  const handleSellerSignUpSubmit = async (e) => {
+    e.preventDefault();
+    const { FullName, Age, Address, Contact, Password, ConfirmPassword } = formData;
 
-    if(Password !== ConfirmPassword){
-      alert('password does not match') 
+    if (Password !== ConfirmPassword) {
+      toast.error('⚠️ Passwords do not match!', { position: "top-center", autoClose: 2500 });
       return;
     }
-  
-   try{
-   const response = await axios.post('http://localhost:5000/Seller/SellerSignUp',{
-    FullName,
-    Age,
-    Address,
-    Contact,
-    Password,
-    ConfirmPassword
-   })
-  alert('signUp Sucessfully')
- navigate('/SellerSignIn')
-   }catch{
-  alert('error creating account plss try again')
-   }
-  }
 
-    return(
-        <>
-      <section className="p-5" >
+    try {
+      await axios.post('http://localhost:5000/Seller/SellerSignUp', formData);
+      toast.success('✅ Sign Up Successful!', { position: "top-center", autoClose: 2000 });
+      setTimeout(() => navigate('/SellerSignIn'), 2500);
+    } catch (error) {
+      toast.error('❌ Failed to create account. Try again!', { position: "top-center", autoClose: 3000 });
+    }
+  };
+
+  return (
+    <>
+      <ToastContainer theme="colored" limit={2} />
+      <section className="p-4">
         <div className="container">
-            <div className="row">
-                <div className="col-md-5 text-primary ms-3 py-5">
-                    <h3 className="">Book Store Marketplace</h3>
-                    <h1>Grow your business and Sell more</h1>
-                 
-                 <div className="py-4">
-                 <h5 className="text-dark"><i class="text-primary bi bi-shop py-5">&nbsp; &nbsp; </i>Leading e-commerce platform in Philippines</h5>                
-                 </div>
-
-                 <div className="py-4">
-                 <h5 className="text-dark"><i class="text-primary bi bi-archive py-5">&nbsp; &nbsp; </i>Growing global presence</h5>                
-                 </div>
-                 
-                 <div className="py-4">
-                 <h5 className="text-dark"><i class="text-primary  bi bi-hand-thumbs-up py-5">&nbsp; &nbsp; </i>shopping app for both iOS and Android in the Philippines</h5>                
-                 </div>
-                   
-                </div>
-
-                <div className="col-md-6 ms-5">
-                    <div className="card shadow">
-                        <h3 className="card-title text-center ">SignUp</h3>
-                        <div className="card-body">
-                            <div className="p-2">
-                                <form onSubmit={handleSellerSignUpSUbmit}>
-                                    <label className="form-label">Full Name</label>
-                                    <input  
-                                     className="form-control shadow"
-                                     value={FullName}
-                                     onChange={(e) => setFullName(e.target.value)}
-                                     placeholder="Full Name"
-                                     required
-                                     >
-
-                                     </input>
-
-
-                                    <label className="form-label">Age</label>
-                                    <input 
-                                    className="form-control shadow"
-                                    type="text"
-                                    value={Age}
-                                    onChange={(e) => setAge(e.target.value)}
-                                    placeholder="Age"
-                                    required
-                                    ></input>
-
-                                    <label className="form-label">Address</label>
-                                    <input 
-                                    className="form-control shadow"
-                                    type="text"
-                                    value={Address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    placeholder="Address"
-                                    required
-                                    ></input>
-
-                                    <label className="form-label">Contact</label>
-                                    <input 
-                                    className="form-control shadow"
-                                    type="text"
-                                    value={Contact}
-                                    onChange={(e) => setContact(e.target.value)}
-                                    placeholder="Contact"
-                                    required
-                                    ></input>
-
-                                      <label className="form-label">Password</label>
-                                    <input 
-                                    className="form-control shadow"
-                                    type="password"
-                                    value={Password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Password"
-                                    required
-                                    >
-                                    </input>
-
-                                    <label className="form-label"> </label>
-                                    <input 
-                                    className="form-control shadow"
-                                    placeholder="Confirm Password"
-                                    value={ConfirmPassword}
-                                    onChange={(e) => setconfirmPassword(e.target.value)}
-                                    type="password"
-                                    required
-                                    >
-                                    
-                                    </input>
-
-
-                                  
-                                   <div className="text-center p-2">
-                                    <button className="btn btn-primary px-5">Sign Up</button>
-                                   </div>
-
-                                   <div className=" text-center">
-                                     <Link className="text-decoration-none" to='/SellerSignIn'>Already have an account?</Link>
-                                   </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div className="row">
+            <div className="col-md-5 text-primary py-4">
+              <h3>📚 Book Store Marketplace</h3>
+              <h1>🚀 Grow your business and sell more</h1>
+              {["🌟 Leading e-commerce platform in Philippines", "🌍 Growing global presence", "📱 Available on iOS and Android"].map((text, idx) => (
+                <h5 key={idx} className="py-2">{text}</h5>
+              ))}
             </div>
+            <div className="col-md-6">
+              <div className="card shadow-lg">
+                <h2 className="card-title text-center my-3">📝 Create Your Account</h2>
+                <div className="card-body">
+                  <form onSubmit={handleSellerSignUpSubmit}>
+                    {['FullName', 'Age', 'Address', 'Contact', 'Password', 'ConfirmPassword'].map((field) => (
+                      <div key={field} className="mb-3">
+                        <label className="form-label">{field.replace(/([A-Z])/g, ' $1').trim()}</label>
+                        <input
+                          className="form-control"
+                          type={field.includes('Password') ? 'password' : 'text'}
+                          name={field}
+                          value={formData[field]}
+                          onChange={handleChange}
+                          placeholder={field.replace(/([A-Z])/g, ' $1').trim()}
+                          required
+                        />
+                      </div>
+                    ))}
+                    <div className="text-center mb-3">
+                      <button className="btn btn-primary px-5 py-2">🚀 Sign Up</button>
+                    </div>
+                    <div className="text-center">
+                      <Link className="text-decoration-none" to="/SellerSignIn">Already have an account? Log in</Link>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-        </>
-    )
-}
-export default SellerLogin
+    </>
+  );
+};
+
+export default SellerLogin;
